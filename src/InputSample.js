@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useRef } from "react";
 
 function InputSample(){
 
@@ -9,6 +9,7 @@ function InputSample(){
     });
 
     const { name, nickname } = inputs; // 비구조화 할당을 통해 값 추출
+    const nameInput = useRef();
 
     const onChange = (e) => {
         const { name, value } = e.target; // 우선 e.target 에서 name 과 value 를 추출
@@ -25,6 +26,8 @@ function InputSample(){
             name: '',
             nickname: ''
         });
+
+        nameInput.current.focus();
     }
 
     return (
@@ -34,6 +37,7 @@ function InputSample(){
                 placeholder="이름" 
                 onChange={onChange} 
                 value={name}
+                ref={nameInput}
             />
             <input 
                 name="nickname" 
