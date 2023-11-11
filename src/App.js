@@ -1,4 +1,4 @@
-import React, { useRef ,useState, useMemo } from 'react';
+import React, { useRef ,useState, useMemo, useCallback } from 'react';
 import UserList from './UserList';
 import CreateUser from './CreateUser';
 
@@ -16,13 +16,19 @@ function App() {
   
   const { username, email } = inputs;
 
-  const onChange = e => {
+  // useCallback 을 사용하여 함수를 재사용 할 수 있도록 설정
+  // inputs 가 바뀔 때만 함수가 새로 만들어지도록 설정
+  // 함수 내부에서 상태 값에 의존해야 할 때는 그 값을 반드시 deps 배열 안에 포함시켜야 함
+  // 함수형 업데이트를 하게 되면 deps 에서 사용하는 상태를 넣어주지 않아도 됨
+  // deps 에 넣는 상태 값은 useCallback 의 파라미터로 설정하는 상태 값이어도 상관 없음
+  // useCallback 의 두번째 파라미터인 deps 배열 안에는 함수에서 사용하는 상태 혹은 props 를 넣어주어야 함
+  const onChange = useCallback(e => {
     const { name, value } = e.target;
     setInputs({
       ...inputs,
       [name] : value
     });
-  };
+  },[inputs]);
 
   const [users,setUsers] = useState([
     {id: 1, username: 'aaaa' ,email: 'a@naver.com',active: true},
@@ -32,7 +38,7 @@ function App() {
 
   const nextId = useRef(4);
 
-  const onCreate = () => {
+  const onCreate = useCallback(() => {
     const user = {
       id : nextId.current,
       username,
@@ -46,29 +52,20 @@ function App() {
       email: '',
     });
     nextId.current += 1;
-  }
+  },[username,email,users]);
 
-  const onRemove = id => {
+  const onRemove = useCallback(id => {
     setUsers(users.filter(user => user.id !== id));
-  }
+  },[users]);
 
-  const onToggle = id => {
+  const onToggle = useCallback(id => {
     setUsers(
       users.map(user => 
         user.id === id ? {...user, active: !user.active} : user
       )
     );
-  }
+  },[users]);
 
-  // useMemo 를 사용하여 연산한 값 재사용하기
-  // useMemo 의 첫번째 파라미터에는 어떻게 연산할지 정의하는 함수를 넣어주면 되고,
-  // 두번째 파라미터에는 deps 배열을 넣어주면 되는데, 이 배열 안에 넣은 내용이 바뀌면,
-  // 우리가 등록한 함수를 호출해서 값을 연산해주고, 만약에 내용이 바뀌지 않았다면 이전에 연산한 값을 재사용하게 됩니다.
-  // 이렇게 함으로써, 렌더링하는 과정에서 함수형 컴포넌트 내부에서 발생하는 연산을 최적화 할 수 있습니다.
-  // 이번에는 users 배열을 파라미터로 넣어주었는데, 이 배열 내부의 값이 바뀔 때에만 함수를 호출하고,
-  // 만약에 배열 내부의 값이 바뀌지 않았다면 이전에 연산한 값을 재사용하게 됩니다.
-  // 이렇게 함으로써, users 배열 내부의 값이 바뀌지 않았다면, 즉 onCreate, onRemove, onToggle 함수가 호출되었을 때만
-  // countActiveUsers 함수가 호출되고, 그렇지 않다면 호출되지 않습니다.
   const count = useMemo(() => countActiveUsers(users),[users]);
 
   return (
