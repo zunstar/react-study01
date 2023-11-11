@@ -34,8 +34,6 @@ function App() {
       email
     }
     
-    // 불변성을 지키기위해 두가지 방법이 있다.
-    // setUsers([...users,user]);
     setUsers(users.concat(user));
 
     setInputs({
@@ -43,6 +41,11 @@ function App() {
       email: '',
     });
     nextId.current += 1;
+  }
+
+  // user.id 가 파라미터로 일치하지 않는 원소만 추출해서 새로운 배열을 만듬
+  const onRemove = id => {
+    setUsers(users.filter(user => user.id !== id));
   }
 
   return (
@@ -53,7 +56,7 @@ function App() {
         onChange={onChange}
         onCreate={onCreate}
       />
-      <UserList users={users} />
+      <UserList users={users} onRemove={onRemove} />
     </>
   );
 }
