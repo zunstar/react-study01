@@ -47,7 +47,6 @@ function App() {
     setUsers(users.filter(user => user.id !== id));
   }
 
-  // user.id 가 파라미터로 일치하면 active 값을 반전시키고, 그렇지 않으면 그대로 둠
   const onToggle = id => {
     setUsers(
       users.map(user => 
