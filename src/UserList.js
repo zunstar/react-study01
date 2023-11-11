@@ -6,12 +6,8 @@ function User({user}){
     )
 }
 
-function UserList(){
-    const users = [
-        {id: 1, name: 'aaaa' ,email: 'a@naver.com'},
-        {id: 2, name: 'bbbb',email: 'b@naver.com'},
-        {id: 3, name: 'cccc',email: 'c@naver.com'},
-    ];
+function UserList({users}){
+   
 
     return(
         <div>
