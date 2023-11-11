@@ -1,14 +1,12 @@
 function User({user}){
     return(
         <div>
-            <b>{user.name}</b> <span>{user.email}</span>
+            <b>{user.username}</b> <span>{user.email}</span>
         </div>
     )
 }
 
 function UserList({users}){
-   
-
     return(
         <div>
             {

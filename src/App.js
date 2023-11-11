@@ -1,24 +1,60 @@
-import React, { useRef } from 'react';
+import React, { useRef ,useState } from 'react';
 import UserList from './UserList';
+import CreateUser from './CreateUser';
 
 function App() {
 
-  const users = [
+  const [inputs, setInputs] = useState({
+    username: '',
+    email: '',
+  });
+  
+  const { username, email } = inputs;
+
+  const onChange = e => {
+    const { name, value } = e.target;
+    setInputs({
+      ...inputs,
+      [name] : value
+    });
+  };
+
+  const [users,setUsers] = useState([
     {id: 1, name: 'aaaa' ,email: 'a@naver.com'},
     {id: 2, name: 'bbbb',email: 'b@naver.com'},
     {id: 3, name: 'cccc',email: 'c@naver.com'},
-  ];
-  // useRef()를 사용하여 변수를 만들고, 이를 useRef를 통해 관리
-  // 컴포넌트가 리렌더링되어도 값이 계속 유지
+  ]);
+
   const nextId = useRef(4);
 
   const onCreate = () => {
-    console.log(nextId.current); // 4
-    // 값이 변경되어도 컴포넌트가 리렌더링되지 않음
+    const user = {
+      id : nextId.current,
+      username,
+      email
+    }
+    
+    // 불변성을 지키기위해 두가지 방법이 있다.
+    // setUsers([...users,user]);
+    setUsers(users.concat(user));
+
+    setInputs({
+      username: '',
+      email: '',
+    });
     nextId.current += 1;
   }
+
   return (
-    <UserList users={users} />
+    <>
+      <CreateUser
+        username={username}
+        email={email}
+        onChange={onChange}
+        onCreate={onCreate}
+      />
+      <UserList users={users} />
+    </>
   );
 }
 
